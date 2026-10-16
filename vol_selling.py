@@ -172,7 +172,7 @@ def main():
     for kind, per_year in [("daily", 365.25), ("weekly", 52.18)]:
         d = tr[tr["kind"] == kind]
         out.append(dict(kind=kind, rule="always, full period", pnl="pnl_0.01", **stats(d["pnl_0.01"], per_year)))
-        d = d[d.index >= start]
+        d = d[(d.index >= start) & d["har"].notna()]  # same days for every rule
         cols = [f"pnl_{h}" for h in HAIRCUTS] + (["pnl_hedged"] if kind == "weekly" else [])
         for k in THRESHOLDS:
             sel = d if k is None else d[d["iv"] > d["har"] + k]
